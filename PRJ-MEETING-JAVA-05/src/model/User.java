@@ -9,8 +9,8 @@ public class User {
     private String phone;
     private String department;
     private String role;
+    private String status;
 
-    // getters & setters
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
@@ -34,4 +34,7 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

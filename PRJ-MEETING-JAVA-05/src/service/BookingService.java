@@ -19,7 +19,11 @@ public class BookingService {
         return bookingDAO.cancel(id);
     }
 
-    public boolean approveBooking(int id) {
-        return bookingDAO.approve(id);
+    public boolean approveBooking(int bookingId, int supportId) {
+        return bookingDAO.approveBooking(bookingId, supportId);
+    }
+
+    public Booking getBookingById(int id) {
+        return bookingDAO.findById(id);
     }
 }

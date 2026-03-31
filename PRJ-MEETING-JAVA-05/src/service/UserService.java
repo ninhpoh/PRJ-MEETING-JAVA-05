@@ -26,4 +26,15 @@ public class UserService {
     public boolean deleteUser(int userId) {
         return userDAO.deleteUser(userId);
     }
+    public boolean approveUser(int userId) {
+        return userDAO.approveUser(userId);
+    }
+
+    public boolean deactivateUser(int userId) {
+        return userDAO.deactivateUser(userId);
+    }
+    public List<User> getSupportStaff() {
+        return userDAO.getSupportStaff();
+    }
+
 }

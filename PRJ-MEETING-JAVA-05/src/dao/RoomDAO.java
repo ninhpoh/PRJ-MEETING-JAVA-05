@@ -10,7 +10,7 @@ import java.util.List;
 public class RoomDAO {
 
     public boolean insert(Room room) {
-        String sql = "INSERT INTO rooms (room_name, capacity, location, room_type, base_price) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO rooms (room_name, capacity, location, room_type, base_price, status) VALUES (?,?,?,?,?,?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, room.getRoomName());
@@ -18,6 +18,7 @@ public class RoomDAO {
             ps.setString(3, room.getLocation());
             ps.setString(4, room.getRoomType());
             ps.setBigDecimal(5, room.getBasePrice());
+            ps.setString(6, room.getStatus());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,6 +40,7 @@ public class RoomDAO {
                 r.setLocation(rs.getString("location"));
                 r.setRoomType(rs.getString("room_type"));
                 r.setBasePrice(rs.getBigDecimal("base_price"));
+                r.setStatus(rs.getString("status"));
                 list.add(r);
             }
         } catch (SQLException e) {
@@ -61,6 +63,7 @@ public class RoomDAO {
                 r.setLocation(rs.getString("location"));
                 r.setRoomType(rs.getString("room_type"));
                 r.setBasePrice(rs.getBigDecimal("base_price"));
+                r.setStatus(rs.getString("status"));
                 return r;
             }
         } catch (SQLException e) {
@@ -70,7 +73,7 @@ public class RoomDAO {
     }
 
     public boolean update(Room room) {
-        String sql = "UPDATE rooms SET room_name=?, capacity=?, location=?, room_type=?, base_price=? WHERE room_id=?";
+        String sql = "UPDATE rooms SET room_name=?, capacity=?, location=?, room_type=?, base_price=?, status=? WHERE room_id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, room.getRoomName());
@@ -78,7 +81,8 @@ public class RoomDAO {
             ps.setString(3, room.getLocation());
             ps.setString(4, room.getRoomType());
             ps.setBigDecimal(5, room.getBasePrice());
-            ps.setInt(6, room.getRoomId());
+            ps.setString(6, room.getStatus());
+            ps.setInt(7, room.getRoomId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,6 +117,7 @@ public class RoomDAO {
                 r.setLocation(rs.getString("location"));
                 r.setRoomType(rs.getString("room_type"));
                 r.setBasePrice(rs.getBigDecimal("base_price"));
+                r.setStatus(rs.getString("status"));
                 list.add(r);
             }
         } catch (SQLException e) {

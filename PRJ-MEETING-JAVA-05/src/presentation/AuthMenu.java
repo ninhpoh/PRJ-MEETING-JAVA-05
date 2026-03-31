@@ -1,7 +1,11 @@
 package presentation;
 
 import model.User;
+import presentation.admin.AdminMenu;
+import presentation.employee.EmployeeMenu;
 import service.UserService;
+import util.ColorUtil;
+
 import java.util.Scanner;
 
 public class AuthMenu {
@@ -10,27 +14,26 @@ public class AuthMenu {
 
     public void show() {
         while (true) {
-            System.out.println("===== Booking Room System =====");
-            System.out.println("1. Đăng nhập");
-            System.out.println("2. Đăng ký");
-            System.out.println("3. Thoát");
+            System.out.println("\n╔═════════════════════════════════════════════════════╗");
+            System.out.println("║              BOOKING ROOM SYSTEM - MENU             ║");
+            System.out.println("╠═════════════════════════════════════════════════════╣");
+            System.out.println("║ 1. Đăng nhập                                        ║");
+            System.out.println("║ 2. Đăng ký                                          ║");
+            System.out.println("║ 3. Thoát                                            ║");
+            System.out.println("╚═════════════════════════════════════════════════════╝");
             System.out.print("Chọn: ");
 
             int choice = sc.nextInt();
             sc.nextLine();
 
             switch (choice) {
-                case 1:
-                    login();
-                    break;
-                case 2:
-                    register();
-                    break;
-                case 3:
-                    System.out.println("Tạm biệt!");
+                case 1 -> login();
+                case 2 -> register();
+                case 3 -> {
+                    System.out.println(ColorUtil.YELLOW + "Tạm biệt!" + ColorUtil.RESET);
                     return;
-                default:
-                    System.out.println("Lựa chọn không hợp lệ!");
+                }
+                default -> System.out.println(ColorUtil.RED + "Lựa chọn không hợp lệ!" + ColorUtil.RESET);
             }
         }
     }
@@ -41,103 +44,107 @@ public class AuthMenu {
             System.out.print("Tên đăng nhập: ");
             String username = sc.nextLine().trim();
             if (username.isEmpty()) {
-                System.err.println("Tên đăng nhập không được để trống");
+                System.out.println(ColorUtil.RED + "Tên đăng nhập không được để trống!" + ColorUtil.RESET);
                 continue;
             }
 
             System.out.print("Mật khẩu: ");
             String password = sc.nextLine().trim();
             if (password.isEmpty()) {
-                System.err.println("Mật khẩu không được để trống!");
+                System.out.println(ColorUtil.RED + "Mật khẩu không được để trống!" + ColorUtil.RESET);
                 continue;
             }
 
             User user = userService.loginUser(username, password);
             if (user != null) {
-                System.out.println("Đăng nhập thành công! Xin chào " + user.getFullName() + " (" + user.getRole() + ")");
+                System.out.println(ColorUtil.GREEN + "Đăng nhập thành công! Xin chào "
+                        + user.getFullName() + " (" + user.getRole() + ")" + ColorUtil.RESET);
                 switch (user.getRole()) {
-                    case "EMPLOYEE":
-                        new EmployeeMenu(user).show();
-                        break;
-                    case "SUPPORT":
-//                        new SupportMenu(user).show();
-                        break;
-                    case "ADMIN":
-                        new AdminMenu(user).show();
-                        break;
+                    case "EMPLOYEE" -> new EmployeeMenu(user).show();
+                    case "SUPPORT" -> {
+                        // new SupportMenu(user).show();
+                    }
+                    case "ADMIN" -> new AdminMenu(user).show();
                 }
                 break;
             } else {
-                System.err.println("Sai tên đăng nhập hoặc mật khẩu, thử lại!");
+                System.out.println(ColorUtil.RED + "Sai tên đăng nhập hoặc mật khẩu, thử lại!" + ColorUtil.RESET);
             }
         }
     }
+
     private void register() {
         System.out.println("===== Đăng ký =====");
         User user = new User();
 
         System.out.print("Tên đăng nhập: ");
-        String username = sc.nextLine();
+        String username = sc.nextLine().trim();
         if (username.isEmpty()) {
-            System.out.println("Tên đăng nhập không được để trống!");
+            System.out.println(ColorUtil.RED + "Tên đăng nhập không được để trống!" + ColorUtil.RESET);
             return;
         }
         user.setUsername(username);
 
         System.out.print("Mật khẩu: ");
-        String password = sc.nextLine();
+        String password = sc.nextLine().trim();
         if (password.length() < 6) {
-            System.out.println("Mật khẩu phải có ít nhất 6 ký tự!");
+            System.out.println(ColorUtil.RED + "Mật khẩu phải có ít nhất 6 ký tự!" + ColorUtil.RESET);
             return;
         }
         user.setPassword(password);
 
         System.out.print("Họ tên: ");
-        String fullName = sc.nextLine();
+        String fullName = sc.nextLine().trim();
         if (fullName.isEmpty()) {
-            System.out.println("Họ tên không được để trống!");
+            System.out.println(ColorUtil.RED + "Họ tên không được để trống!" + ColorUtil.RESET);
             return;
         }
         user.setFullName(fullName);
 
         System.out.print("Email: ");
-        String email = sc.nextLine();
+        String email = sc.nextLine().trim();
         if (!email.contains("@")) {
-            System.out.println("Email không hợp lệ!");
+            System.out.println(ColorUtil.RED + "Email không hợp lệ!" + ColorUtil.RESET);
             return;
         }
         user.setEmail(email);
 
         System.out.print("Số điện thoại: ");
-        String phone = sc.nextLine();
+        String phone = sc.nextLine().trim();
         if (!phone.matches("\\d{9,11}")) {
-            System.out.println("Số điện thoại phải là 9-11 chữ số!");
+            System.out.println(ColorUtil.RED + "Số điện thoại phải là 9-11 chữ số!" + ColorUtil.RESET);
             return;
         }
         user.setPhone(phone);
 
         System.out.print("Phòng ban: ");
-        String department = sc.nextLine();
+        String department = sc.nextLine().trim();
         if (department.isEmpty()) {
             department = "Chưa cập nhật";
         }
         user.setDepartment(department);
 
-        System.out.print("Vai trò (EMPLOYEE/SUPPORT): ");
-        String role = sc.nextLine().toUpperCase();
-        if (!role.equals("EMPLOYEE") && !role.equals("SUPPORT")) {
-            System.out.println("Vai trò chỉ được chọn EMPLOYEE hoặc SUPPORT!");
-            return;
+        int roleChoice = -1;
+        while (true) {
+            System.out.println("Chọn vai trò:");
+            System.out.println("1. EMPLOYEE");
+            System.out.println("2. SUPPORT");
+            System.out.print("Lựa chọn (1-2): ");
+            try {
+                roleChoice = Integer.parseInt(sc.nextLine().trim());
+                if (roleChoice == 1 || roleChoice == 2) break;
+                else System.out.println(ColorUtil.RED + "Chỉ được chọn 1 hoặc 2!" + ColorUtil.RESET);
+            } catch (NumberFormatException e) {
+                System.out.println(ColorUtil.RED + "Vui lòng nhập số nguyên!" + ColorUtil.RESET);
+            }
         }
-        user.setRole(role);
+        if (roleChoice == 1) user.setRole("EMPLOYEE");
+        else if (roleChoice == 2) user.setRole("SUPPORT");
 
         if (userService.registerUser(user)) {
-            System.out.println("Đăng ký thành công!");
+            System.out.println(ColorUtil.GREEN + "Đăng ký thành công!" + ColorUtil.RESET);
         } else {
-            System.out.println("Đăng ký thất bại!");
+            System.out.println(ColorUtil.RED + "Đăng ký thất bại!" + ColorUtil.RESET);
         }
     }
-
-
-
 }

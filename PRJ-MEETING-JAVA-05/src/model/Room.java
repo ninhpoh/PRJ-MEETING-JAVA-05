@@ -9,6 +9,7 @@ public class Room {
     private String location;
     private String roomType;
     private BigDecimal basePrice;
+    private String status; // thêm trạng thái phòng
 
     // Getter & Setter
     public int getRoomId() {
@@ -51,5 +52,12 @@ public class Room {
     }
     public void setBasePrice(BigDecimal basePrice) {
         this.basePrice = basePrice;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

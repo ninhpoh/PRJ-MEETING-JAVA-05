@@ -40,6 +40,7 @@ public class BookingDAO {
                 b.setBookingDate(rs.getDate("booking_date").toLocalDate());
                 b.setSession(rs.getString("session"));
                 b.setStatus(rs.getString("status"));
+                b.setSupportStaffId(rs.getInt("support_staff_id"));
                 list.add(b);
             }
         } catch (SQLException e) {
@@ -65,6 +66,57 @@ public class BookingDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, bookingId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Booking findById(int id) {
+        String sql = "SELECT * FROM bookings WHERE booking_id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Booking b = new Booking();
+                b.setBookingId(rs.getInt("booking_id"));
+                b.setUserId(rs.getInt("user_id"));
+                b.setRoomId(rs.getInt("room_id"));
+                b.setBookingDate(rs.getDate("booking_date").toLocalDate());
+                b.setSession(rs.getString("session"));
+                b.setStatus(rs.getString("status"));
+                b.setSupportStaffId(rs.getInt("support_staff_id"));
+                return b;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean updateStatus(int id, String status) {
+        String sql = "UPDATE bookings SET status=? WHERE booking_id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean approveBooking(int bookingId, int supportId) {
+        String sql = "UPDATE bookings SET status='APPROVED', support_staff_id=? WHERE booking_id=? AND status='PENDING'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, supportId);
+            ps.setInt(2, bookingId);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

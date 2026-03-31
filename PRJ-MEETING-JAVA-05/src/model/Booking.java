@@ -9,6 +9,7 @@ public class Booking {
     private LocalDate bookingDate;
     private String session;
     private String status;
+    private int supportStaffId;
 
     public int getBookingId() { return bookingId; }
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
@@ -27,4 +28,12 @@ public class Booking {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public int getSupportStaffId() {
+        return supportStaffId;
+    }
+
+    public void setSupportStaffId(int supportStaffId) {
+        this.supportStaffId = supportStaffId;
+    }
 }
