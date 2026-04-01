@@ -10,7 +10,7 @@ public class EmployeeMenu {
     private Scanner sc = new Scanner(System.in);
     private User currentUser;
     private UserService userService = new UserService();
-    private BookingService bookingService = new BookingService(); // thêm dòng này
+    private BookingService bookingService = new BookingService();
 
     public EmployeeMenu(User user) {
         this.currentUser = user;

@@ -1,0 +1,118 @@
+create database if not exists booking_room;
+use booking_room;
+
+-- 1. Users
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    department VARCHAR(100),
+    role ENUM('EMPLOYEE','SUPPORT','ADMIN') NOT NULL
+);
+
+-- 2. Rooms
+CREATE TABLE rooms (
+    room_id INT AUTO_INCREMENT PRIMARY KEY,
+    room_name VARCHAR(100) NOT NULL,
+    capacity INT NOT NULL,
+    location VARCHAR(100),
+    room_type ENUM('CLASSIC','VIP','VIP_PRO_MAX') NOT NULL,
+    base_price DECIMAL(10,2) NOT NULL
+);
+
+-- 3. Equipment
+CREATE TABLE equipment (
+    equipment_id INT AUTO_INCREMENT PRIMARY KEY,
+    equipment_name VARCHAR(100) NOT NULL,
+    total_quantity INT NOT NULL,
+    available_quantity INT NOT NULL,
+    status ENUM('AVAILABLE','BROKEN','IN_USE') DEFAULT 'AVAILABLE',
+    unit_price DECIMAL(10,2) DEFAULT 0
+);
+
+-- 4. Services
+CREATE TABLE services (
+    service_id INT AUTO_INCREMENT PRIMARY KEY,
+    service_name VARCHAR(100) NOT NULL,
+    unit_price DECIMAL(10,2) DEFAULT 0
+);
+
+-- 5. Bookings
+CREATE TABLE bookings (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    room_id INT NOT NULL,
+    support_staff_id INT,
+    booking_date DATE NOT NULL,
+    session ENUM('MORNING','AFTERNOON') NOT NULL,
+    status ENUM('PENDING','APPROVED','REJECTED','CANCELLED') DEFAULT 'PENDING',
+    total_cost DECIMAL(10,2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+    FOREIGN KEY (support_staff_id) REFERENCES users(user_id)
+);
+
+-- 6. Booking_Equipment
+CREATE TABLE booking_equipment (
+    booking_id INT,
+    equipment_id INT,
+    quantity INT NOT NULL,
+    PRIMARY KEY (booking_id, equipment_id),
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id)
+);
+
+-- 7. Booking_Services
+CREATE TABLE booking_services (
+    booking_id INT,
+    service_id INT,
+    quantity INT NOT NULL,
+    PRIMARY KEY (booking_id, service_id),
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
+    FOREIGN KEY (service_id) REFERENCES services(service_id)
+);
+
+-- 8. Preparation_Status
+CREATE TABLE preparation_status (
+    booking_id INT PRIMARY KEY,
+    status ENUM('PREPARING','READY','MISSING_EQUIPMENT') DEFAULT 'PREPARING',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+);
+
+USE booking_room;
+
+INSERT INTO users (username, password, full_name, email, phone, department, role)
+VALUES (
+           'admin01',
+           'hashed_password_admin',
+           'System Administrator',
+           'admin01@example.com',
+           '0901234567',
+           'Management',
+           'ADMIN'
+       );
+
+INSERT INTO rooms (room_name, capacity, location, room_type, base_price) VALUES
+
+('Classic Room A', 10, 'Tầng 1 - Khu A', 'CLASSIC', 200.00),
+('Classic Room B', 12, 'Tầng 1 - Khu B', 'CLASSIC', 220.00),
+('Classic Room C', 15, 'Tầng 2 - Khu A', 'CLASSIC', 250.00),
+
+('VIP Room A', 20, 'Tầng 3 - Khu VIP', 'VIP', 500.00),
+('VIP Room B', 25, 'Tầng 3 - Khu VIP', 'VIP', 550.00),
+('VIP Room C', 30, 'Tầng 4 - Khu VIP', 'VIP', 600.00),
+
+('VIP Pro Max A', 40, 'Tầng 5 - Khu Pro', 'VIP_PRO_MAX', 1000.00),
+('VIP Pro Max B', 50, 'Tầng 5 - Khu Pro', 'VIP_PRO_MAX', 1200.00),
+('VIP Pro Max C', 60, 'Tầng 6 - Khu Pro', 'VIP_PRO_MAX', 1500.00);
+
+ALTER TABLE users
+ADD COLUMN status ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE';
+
+ALTER TABLE rooms
+    ADD COLUMN status ENUM('AVAILABLE','UNAVAILABLE','MAINTENANCE') DEFAULT 'AVAILABLE';

@@ -15,7 +15,7 @@ public class BookingDAO {
             ps.setInt(1, booking.getUserId());
             ps.setInt(2, booking.getRoomId());
             ps.setDate(3, java.sql.Date.valueOf(booking.getBookingDate()));
-            ps.setString(4, booking.getSession());
+            ps.setString(4, booking.getSession());;
             ps.setString(5, booking.getStatus());
 
             return ps.executeUpdate() > 0;

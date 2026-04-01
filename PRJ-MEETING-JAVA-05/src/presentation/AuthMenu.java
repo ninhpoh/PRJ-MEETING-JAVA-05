@@ -3,6 +3,7 @@ package presentation;
 import model.User;
 import presentation.admin.AdminMenu;
 import presentation.employee.EmployeeMenu;
+import presentation.support.SupportMenu;
 import service.UserService;
 import util.ColorUtil;
 
@@ -62,7 +63,7 @@ public class AuthMenu {
                 switch (user.getRole()) {
                     case "EMPLOYEE" -> new EmployeeMenu(user).show();
                     case "SUPPORT" -> {
-                        // new SupportMenu(user).show();
+                        new SupportMenu(user.getUserId()).show();
                     }
                     case "ADMIN" -> new AdminMenu(user).show();
                 }
